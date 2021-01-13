@@ -38,7 +38,7 @@ export default class Authenticator {
             }
         }).then((response) => {
 
-           return console.log(response.data.data,'xablaauuuu')
+           return this.authenticated = true;
 
         }).catch(error => console.log(error.response, 'kdopaskdoask'))
     }

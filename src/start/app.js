@@ -13,18 +13,21 @@ import { sampleAction } from '../store/actions/sample/SampleAction';
 import { Route, Switch, BrowserRouter, useHistory, Redirect } from 'react-router-dom';
 import Routes from './routes';
 
-import AuthLayout from '../resources/views/layouts/AuthLayout';
-import AppLayout from '../resources/views/layouts/AppLayout';
+import AuthLayout from '../app/views/layouts/AuthLayout';
+import AppLayout from '../app/views/layouts/AppLayout';
 import Authenticator from './authenticator';
+import app from '../config/app';
 
 export default function App() {
 
+
     const [appControl, setAppControl] = useState({
 
-        isAuthenticated: true,
+        withAuth: app.withAuth,
+        isAuthenticated: Authenticator.isAuthenticated,
         isLoaded: false,
-        privateRoutes: [],
-        publicRoutes: []
+        privateRoutes: Routes.map((route, key) => <Route key={key} exact={route.exact} path={route.path} component={route.component} />),
+        publicRoutes: Routes.map((route, key) => !route.private ? <Route key={key} exact={route.exact} path={route.path} component={route.component} /> : null)
 
     });
 
@@ -46,6 +49,7 @@ export default function App() {
     const Layout = logged ? AppLayout : AuthLayout;
 
     useEffect(() => {
+        
         dispatch(sampleAction())
 
         const data = {
@@ -63,31 +67,29 @@ export default function App() {
 
     }, [])
 
-    /**
-     * Route Manager is the public interface used to define
-     * routes, groups and resources.
-     *
-    */
 
-    const privateRoutes = Routes.map((route, key) => <Route key={key} exact={route.exact} path={route.path} component={route.component} />);
-    const publicRoutes = Routes.map((route, key) => !route.private ? <Route key={key} exact={route.exact} path={route.path} component={route.component} /> : null);
 
     const redirectIfAuthenticated = () => {
+        
+        if (appControl.withAuth) {
 
-        if (logged && window.location.pathname === '/login') {
-            return redirectTo('/');
-        }
-
-        for (let route of Routes) {
-            if (!logged && route.type === 'auth' && route.path === window.location.pathname) {
-                return redirectTo(window.location.pathname);
+            if (logged && window.location.pathname === '/login') {
+                return redirectTo('/');
             }
 
-            if (!logged && route.private && route.path === window.location.pathname) {
-                return redirectTo('/login');
-            }
+            for (let route of Routes) {
+                if (!logged && route.type === 'auth' && route.path === window.location.pathname) {
+                    return redirectTo(window.location.pathname);
+                }
 
+                if (!logged && route.private && route.path === window.location.pathname) {
+                    return redirectTo('/login');
+                }
+            }
         }
+
+        return;
+
     }
 
 
@@ -100,8 +102,8 @@ export default function App() {
             {redirectIfAuthenticated()}
             <Layout>
                 <Switch>
-                    {privateRoutes}
-                    {publicRoutes}
+                    {appControl.privateRoutes}
+                    {appControl.publicRoutes}
                 </Switch>
             </Layout>
         </BrowserRouter>

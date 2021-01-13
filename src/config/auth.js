@@ -23,5 +23,9 @@ export default {
         key: 'token',
         secure: false,
         expires: 1
+    },
+    
+    sessionStorage : {
+        key: 'mySessionStorage',
     }
 }

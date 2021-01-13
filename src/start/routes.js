@@ -9,8 +9,8 @@
 |
 */
 
-import Home from '../resources/views/home';
-import Contact from '../resources/views/contact';
+import Home from '../app/views/home';
+import Contact from '../app/views/contact';
 
 const routes = [
   {
