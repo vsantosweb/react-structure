@@ -5,11 +5,12 @@ const UserContext = React.createContext({
     name: 'Guest',
 });
 
-export default function Contact({ View }) {
-    console.log(View, 'ok')
+export default function Contact(props) {
+    console.log(props, 'pagina contato')
+    
     return (
         <UserContext.Provider value={'signedInUser'}>
-            hellowolrdssss
+            Página Contato
         </UserContext.Provider>
     )
 }

@@ -5,11 +5,12 @@ const UserContext = React.createContext({
     name: 'Guest',
 });
 
-export default function Home({ View }) {
-    console.log(View, 'ok')
+export default function Home(props) {
+
+    console.log(props,'pagina home')
     return (
         <UserContext.Provider value={'signedInUser'}>
-            hellowolrd
+            Home Page
         </UserContext.Provider>
     )
 }

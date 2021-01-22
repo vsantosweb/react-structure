@@ -22,7 +22,7 @@ export default function AppLayout({children}) {
         <div>
             <Navbar adsMachines={machines} />
             {children}
-            <footer>footer</footer>
+            <footer>footers</footer>
         </div>
     )
 }

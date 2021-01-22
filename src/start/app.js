@@ -10,30 +10,34 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { sampleAction } from '../store/actions/sample/SampleAction';
-import { Route, Switch, BrowserRouter, useHistory, Redirect } from 'react-router-dom';
+import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
 import Routes from './routes';
 
 import AuthLayout from '../app/views/layouts/AuthLayout';
 import AppLayout from '../app/views/layouts/AppLayout';
 import Authenticator from './authenticator';
 import app from '../config/app';
+import * as Layouts from '../app/views/layouts';
+import Error404 from '../app/views/errors/404';
+import Home from '../app/views/home';
 
-export default function App() {
 
+export default function App(props) {
 
-    const [appControl, setAppControl] = useState({
+    const [application, setapplication] = useState({
 
         withAuth: app.withAuth,
         isAuthenticated: Authenticator.isAuthenticated,
-        isLoaded: false,
-        privateRoutes: Routes.map((route, key) => <Route key={key} exact={route.exact} path={route.path} component={route.component} />),
-        publicRoutes: Routes.map((route, key) => !route.private ? <Route key={key} exact={route.exact} path={route.path} component={route.component} /> : null)
+        layout: '',
 
     });
+    const [logged, setLogged] = useState(false);
+    const [Layout, setLayout] = useState(false);
+    const [route, setRoute] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+    const [routePath, setRoutePath] = useState(null);
 
-
-    const [logged, setLogged] = useState(true);
-
+    const [RouteLayout, setRouteLayout] = useState(false);
     /*
     |--------------------------------------------------------------------------
     | Utilização de redutores
@@ -46,68 +50,95 @@ export default function App() {
 
     const dispatch = useDispatch();
     const sampleGlobalState = useSelector(state => state);
-    const Layout = logged ? AppLayout : AuthLayout;
 
     useEffect(() => {
-        
-        dispatch(sampleAction())
+        setLogged(true)
 
-        const data = {
-            email: 'john@doe.com',
-            password: 'password'
-        }
-        // const auth = Authenticator.signIn(data);
-
-        // auth.then(response => {
-        //     Authenticator.setSession('cookie', response.data.data)
-
-        // });
-
-        // Authenticator.isAuthenticated()
+        redirectIfAuthenticated()
 
     }, [])
 
 
+    const redirectIfAuthenticated = async () => {
 
-    const redirectIfAuthenticated = () => {
-        
-        if (appControl.withAuth) {
+        if (application.withAuth) {
+            return await Authenticator.isAuthenticated().then(response => {
 
-            if (logged && window.location.pathname === '/login') {
-                return redirectTo('/');
-            }
+                if (new Authenticator().authenticated && window.location.pathname === '/login') {
 
-            for (let route of Routes) {
-                if (!logged && route.type === 'auth' && route.path === window.location.pathname) {
-                    return redirectTo(window.location.pathname);
+                    return redirectTo('/');
                 }
 
-                if (!logged && route.private && route.path === window.location.pathname) {
-                    return redirectTo('/login');
+                for (let route of Routes) {
+                    if (!new Authenticator().authenticated && route.type === 'auth' && route.path === window.location.pathname) {
+
+                        return redirectTo(window.location.pathname);
+                    }
+
+                    if (!new Authenticator().authenticated && route.private && route.path === window.location.pathname) {
+
+                        return redirectTo('/login');
+                    }
                 }
-            }
+                renderRoutes()
+
+            })
+
         }
+        renderRoutes()
 
         return;
 
     }
 
+    const redirectTo = (path) => window.location.pathname = path
 
-    const redirectTo = (path) => {
-        return <Redirect key={path} to={{ pathname: path }} />
+
+    const renderRoutes = () => {
+
+        const RouteChildren = Routes.filter(route => route.children !== undefined).map(route => route.children);
+
+        let childrenList = [];
+
+        for (let i = 0; i < RouteChildren.length; i++) {
+            for (let j = 0; j < RouteChildren[i].length; j++) {
+                childrenList.push(RouteChildren[i][j])
+            }
+        }
+
+        const routes = [
+            ...Routes.map(route => route),
+            ...childrenList
+        ]
+        let compiledRoutes = routes.map(ViewRoute => {
+
+
+            if (window.location.pathname === ViewRoute.path) {
+
+                setLayout({ view: Layouts[ViewRoute.layout] });
+
+            }
+            setRouteLayout({
+                layout:Layouts[ViewRoute.layout],
+                route: <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => <ViewRoute.component {...props} />} />
+            })
+            return <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => <ViewRoute.component {...props} />} />
+
+        })
+        setRoute(compiledRoutes)
+
     }
+    console.log(Layout)
     return (
-
-        <BrowserRouter>
-            {redirectIfAuthenticated()}
-            <Layout>
+        route ?
+            <BrowserRouter>
                 <Switch>
-                    {appControl.privateRoutes}
-                    {appControl.publicRoutes}
+                    <Layout.view>
+                        {route}
+                    </Layout.view>
                 </Switch>
-            </Layout>
-        </BrowserRouter>
 
+            </BrowserRouter> : ''
 
     )
 

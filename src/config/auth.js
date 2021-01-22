@@ -11,8 +11,8 @@
 
 export default {
     
-    authURL: `${process.env.REACT_APP_URL}/user/login`,
-    authenticatedUrl: `${process.env.REACT_APP_URL}/user/logged`,
+    authURL: `${process.env.REACT_APP_API_URL}/client/customer/auth/login`,
+    authenticatedUrl: `${process.env.REACT_APP_API_URL}/client/customer/auth/logged`,
 
     localStorage: {
         key:'mySession',

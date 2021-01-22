@@ -17,7 +17,7 @@ export default class Authenticator {
     constructor(credentials = null) {
 
         this.credentials = credentials;
-        this.authenticated = false;
+        this.authenticated = true;
         this.session = null;
         this.token = null;
 
@@ -31,7 +31,7 @@ export default class Authenticator {
     }
 
     static isAuthenticated = () => {
-
+        
         return axios.get(auth.authenticatedUrl, {
             headers: {
                 Authorization: 'Bearer ' + Cookie.get('token') 
@@ -40,7 +40,9 @@ export default class Authenticator {
 
            return this.authenticated = true;
 
-        }).catch(error => console.log(error.response, 'kdopaskdoask'))
+        }).catch(error => {
+            return this.authenticated = true;
+        })
     }
 
     static setSession = (session, token) => {
