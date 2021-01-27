@@ -10,34 +10,22 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { sampleAction } from '../store/actions/sample/SampleAction';
-import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
+import { Route, Switch, BrowserRouter, useHistory } from 'react-router-dom';
 import Routes from './routes';
 
-import AuthLayout from '../app/views/layouts/AuthLayout';
-import AppLayout from '../app/views/layouts/AppLayout';
 import Authenticator from './authenticator';
 import app from '../config/app';
 import * as Layouts from '../app/views/layouts';
 import Error404 from '../app/views/errors/404';
-import Home from '../app/views/home';
-
+import { SEO } from '../app/components/SEO/SEO';
+import {Layout} from '../app/views/layouts/index.tsx';
 
 export default function App(props) {
 
-    const [application, setapplication] = useState({
-
-        withAuth: app.withAuth,
-        isAuthenticated: Authenticator.isAuthenticated,
-        layout: '',
-
-    });
-    const [logged, setLogged] = useState(false);
-    const [Layout, setLayout] = useState(false);
-    const [route, setRoute] = useState(false);
-    const [loaded, setLoaded] = useState(false);
-    const [routePath, setRoutePath] = useState(null);
-
-    const [RouteLayout, setRouteLayout] = useState(false);
+    const [layout, setLayout] = useState(false);
+    const [routes, setRoutes] = useState(false);
+    const [pageInfo, pageConfig] = useState('')
+    const [matchRoutes, setMatchRoutes] = useState(false);
     /*
     |--------------------------------------------------------------------------
     | Utilização de redutores
@@ -51,32 +39,26 @@ export default function App(props) {
     const dispatch = useDispatch();
     const sampleGlobalState = useSelector(state => state);
 
-    useEffect(() => {
-        setLogged(true)
-
-        redirectIfAuthenticated()
-
-    }, [])
+    useEffect(() => { redirectIfAuthenticated() }, [pageInfo])
 
 
     const redirectIfAuthenticated = async () => {
 
-        if (application.withAuth) {
-            return await Authenticator.isAuthenticated().then(response => {
+        if (app.withAuth) {
+            return await Authenticator.isAuthenticated().then(isAuth => {
 
-                if (new Authenticator().authenticated && window.location.pathname === '/login') {
+                if (isAuth && window.location.pathname === '/login') {
 
                     return redirectTo('/');
                 }
 
                 for (let route of Routes) {
-                    if (!new Authenticator().authenticated && route.type === 'auth' && route.path === window.location.pathname) {
+                    if (!isAuth && route.type === 'auth' && route.path === window.location.pathname) {
 
                         return redirectTo(window.location.pathname);
                     }
 
-                    if (!new Authenticator().authenticated && route.private && route.path === window.location.pathname) {
-
+                    if (!isAuth && route.private && route.path === window.location.pathname) {
                         return redirectTo('/login');
                     }
                 }
@@ -105,37 +87,54 @@ export default function App(props) {
                 childrenList.push(RouteChildren[i][j])
             }
         }
-
         const routes = [
             ...Routes.map(route => route),
             ...childrenList
         ]
-        let compiledRoutes = routes.map(ViewRoute => {
 
 
-            if (window.location.pathname === ViewRoute.path) {
+        // let compiledRoutes = routes.map(ViewRoute => {
 
-                setLayout({ view: Layouts[ViewRoute.layout] });
+        //     return <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => {
 
-            }
-            setRouteLayout({
-                layout:Layouts[ViewRoute.layout],
-                route: <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => <ViewRoute.component {...props} />} />
-            })
-            return <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => <ViewRoute.component {...props} />} />
+        //         console.log(props.match,  ViewRoute.path)
+        //         if (props.match.path === ViewRoute.path) {
+        //             console.log(props.match.path, ViewRoute.path)
+        //             setLayout(ViewRoute.layout)
+        //             return <ViewRoute.component pageConfig={pageConfig} {...props} />;
+        //         }
 
-        })
-        setRoute(compiledRoutes)
+        //     }} />
+
+        // })
+        let compiledRoutes =[];
+        for (let i = 0; i < routes.length; i++) {
+            let Component = routes[i];
+            compiledRoutes.push(<Route key={Component.path} exact={Component.exact} path={Component.path} render={(props) => {
+                console.log(props.match)
+                if (window.location.pathname === props.match.url) {
+                    console.log(window.location.pathname)
+                    setLayout(Component.layout)
+                    return <Component.component pageConfig={pageConfig} {...props} />;
+                }
+
+            }} />)
+        }
+        setRoutes(compiledRoutes)
 
     }
-    console.log(Layout)
+
     return (
-        route ?
+        routes ?
             <BrowserRouter>
+
                 <Switch>
-                    <Layout.view>
-                        {route}
-                    </Layout.view>
+
+                    <Layout layoutType={layout} >
+                        <SEO {...pageInfo} />
+                        {routes}
+                    </Layout>
+
                 </Switch>
 
             </BrowserRouter> : ''

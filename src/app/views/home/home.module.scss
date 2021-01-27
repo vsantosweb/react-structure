@@ -1,0 +1,11 @@
+@import '../../styles/sass/main.scss';
+
+.home{
+    background:red;
+    .button{
+        background: black;
+        .span{
+            color: #fff;
+        }
+    }
+}

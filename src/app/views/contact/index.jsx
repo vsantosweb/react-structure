@@ -1,16 +1,21 @@
-import React, { createContext } from 'react';
-import { PageLayout } from '../layouts/AppLayout';
-
-const UserContext = React.createContext({
-    name: 'Guest',
-});
+import React, { useEffect } from 'react';
 
 export default function Contact(props) {
-    console.log(props, 'pagina contato')
-    
+
+    useEffect(() => {
+
+        props.pageConfig({
+            pageDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+            pageTitle: 'CONTATO',
+            pageUrl: '/contato',
+            image: null
+        })
+
+    }, []);
+
     return (
-        <UserContext.Provider value={'signedInUser'}>
+        <div>
             Página Contato
-        </UserContext.Provider>
+        </div>
     )
 }

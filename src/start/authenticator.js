@@ -14,48 +14,63 @@ import auth from '../config/auth';
 
 export default class Authenticator {
 
-    constructor(credentials = null) {
+    constructor(setAuth) {
 
-        this.credentials = credentials;
-        this.authenticated = true;
+        this.authenticated = false;
         this.session = null;
         this.token = null;
+        this.setAuth = setAuth;
 
     }
 
     static signIn = async (credentials) => {
 
         return axios.post(auth.authURL, credentials)
-            .then((response) => response)
+            .then((response) => {
+                Authenticator.setSession('cookie', response.data.data);
+                window.location.reload();
+                return response.data
+
+            })
             .catch(error => error.response)
     }
+    static signOut = async () => {
 
-    static isAuthenticated = () => {
-        
-        return axios.get(auth.authenticatedUrl, {
+        return await axios.post(auth.logoutUrl, [], {
             headers: {
-                Authorization: 'Bearer ' + Cookie.get('token') 
+                Authorization: 'Bearer ' + Cookie.get(auth.cookie.key)
+            }
+
+        }).then((response => {
+            Cookie.remove(auth.cookie.key)
+            window.location.href = '/login'
+        }))
+    }
+    static isAuthenticated = async () => {
+
+        await axios.get(auth.authenticatedUrl, {
+            headers: {
+                Authorization: 'Bearer ' + Cookie.get(auth.cookie.key)
             }
         }).then((response) => {
-
-           return this.authenticated = true;
+            return this.authenticated = true;
 
         }).catch(error => {
-            return this.authenticated = true;
+            this.authenticated = false;
         })
+
+        return this.authenticated;
     }
 
     static setSession = (session, token) => {
 
         switch (session) {
             case 'cookie':
-
                 const cookie = auth.cookie;
                 this.authenticated = true;
                 Cookie.set(cookie.key, token, { secure: cookie.secure, expires: cookie.expires });
                 this.session = cookie;
-
-                break;
+                return token;
             case 'localStorage':
                 this.session = auth.localStorage;
             default:

@@ -13,7 +13,10 @@ import Home from '../app/views/home';
 import Contact from '../app/views/contact';
 import Login from '../app/views/auth/login';
 import customers from '../app/views/customers';
-import error404 from '../app/views/errors/404';
+import { ErrorLayout } from '../app/views/layouts';
+import CustomerShow from '../app/views/customers/CustomerShow';
+
+
 
 const routes = [
 
@@ -40,13 +43,15 @@ const routes = [
         name: 'Create Customer',
         path: '/customers',
         component: customers,
-        layout: 'AppLayout'
+        layout: 'AppLayout',
+        exact: true
       },
       {
         name: 'Show Customer',
         path: '/customers/:id',
         component: customers,
-        layout: 'AppLayout'
+        layout: 'AppLayout',
+        exact: false
       }
     ]
   },
@@ -57,7 +62,7 @@ const routes = [
     component: Home,
     layout: 'AppLayout',
     private: false,
-    exact: true,
+    exact: false,
     children: [
       {
         name: 'Create PRoduto',
@@ -69,7 +74,7 @@ const routes = [
       {
         name: 'Show produto',
         path: '/products/:id',
-        component: customers,
+        component: CustomerShow,
         layout: 'AppLayout'
       }
     ]
@@ -79,20 +84,11 @@ const routes = [
     name: 'contato',
     icon: null,
     component: Contact,
-    layout: 'AuthLayout',
-    private: true,
-    exact: false,
-  },
-
-  {
-    path: '/404',
-    name: '404',
-    icon: null,
-    component: error404,
-    layout: 'ErrorLayout',
+    layout: 'AppLayout',
     private: true,
     exact: false,
   }
+  
 ];
 
 export default routes;
