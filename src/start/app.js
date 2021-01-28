@@ -9,23 +9,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { sampleAction } from '../store/actions/sample/SampleAction';
-import { Route, Switch, BrowserRouter, useHistory } from 'react-router-dom';
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
 import Routes from './routes';
 
 import Authenticator from './authenticator';
 import app from '../config/app';
-import * as Layouts from '../app/views/layouts';
-import Error404 from '../app/views/errors/404';
 import { SEO } from '../app/components/SEO/SEO';
-import {Layout} from '../app/views/layouts/index.tsx';
+import { Layout } from '../app/views/layouts/index.tsx';
+
 
 export default function App(props) {
 
     const [layout, setLayout] = useState(false);
     const [routes, setRoutes] = useState(false);
     const [pageInfo, pageConfig] = useState('')
-    const [matchRoutes, setMatchRoutes] = useState(false);
+    
     /*
     |--------------------------------------------------------------------------
     | Utilização de redutores
@@ -36,14 +34,15 @@ export default function App(props) {
     |
     */
 
-    const dispatch = useDispatch();
-    const sampleGlobalState = useSelector(state => state);
+    const sampleGlobalState = useSelector(state => state.LayoutReducer);
+    console.log(sampleGlobalState)
 
-    useEffect(() => { redirectIfAuthenticated() }, [pageInfo])
+    useEffect(() => {
+        redirectIfAuthenticated()
+}, [pageInfo])
 
 
     const redirectIfAuthenticated = async () => {
-
         if (app.withAuth) {
             return await Authenticator.isAuthenticated().then(isAuth => {
 
@@ -62,12 +61,11 @@ export default function App(props) {
                         return redirectTo('/login');
                     }
                 }
-                renderRoutes()
+                 renderRoutes()
 
             })
 
         }
-        renderRoutes()
 
         return;
 
@@ -93,33 +91,20 @@ export default function App(props) {
         ]
 
 
-        // let compiledRoutes = routes.map(ViewRoute => {
+        let compiledRoutes = routes.map(ViewRoute => {
 
-        //     return <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => {
+            return <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => {
 
-        //         console.log(props.match,  ViewRoute.path)
-        //         if (props.match.path === ViewRoute.path) {
-        //             console.log(props.match.path, ViewRoute.path)
-        //             setLayout(ViewRoute.layout)
-        //             return <ViewRoute.component pageConfig={pageConfig} {...props} />;
-        //         }
-
-        //     }} />
-
-        // })
-        let compiledRoutes =[];
-        for (let i = 0; i < routes.length; i++) {
-            let Component = routes[i];
-            compiledRoutes.push(<Route key={Component.path} exact={Component.exact} path={Component.path} render={(props) => {
-                console.log(props.match)
                 if (window.location.pathname === props.match.url) {
-                    console.log(window.location.pathname)
-                    setLayout(Component.layout)
-                    return <Component.component pageConfig={pageConfig} {...props} />;
+                    
+                     return <ViewRoute.component layout={setLayout} pageConfig={pageConfig} {...props} />;
                 }
 
-            }} />)
-        }
+            }} />
+
+        })
+
+
         setRoutes(compiledRoutes)
 
     }
@@ -129,7 +114,6 @@ export default function App(props) {
             <BrowserRouter>
 
                 <Switch>
-
                     <Layout layoutType={layout} >
                         <SEO {...pageInfo} />
                         {routes}

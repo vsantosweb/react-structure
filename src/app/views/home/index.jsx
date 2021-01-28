@@ -1,22 +1,19 @@
 import React, { useEffect } from 'react';
-import { SEO } from '../../components/SEO/SEO';
-import { PageLayout } from '../layouts/AppLayout';
 
 import css from './home.module.scss';
 
-console.log(css)
-export default function Home(props) {
+export default function Home({layout, pageConfig}) {
 
     useEffect(() => {
-
-        props.pageConfig({
-            pageDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry', 
-            pageTitle: 'Pagina Home', 
-            pageUrl: '/home', 
+        layout('AppLayout')
+        pageConfig({
+            pageDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+            pageTitle: 'Pagina Home',
+            pageUrl: '/home',
             image: null
         })
 
-    }, []);
+    }, [layout, pageConfig]);
 
     return (
 

@@ -13,7 +13,6 @@ import Home from '../app/views/home';
 import Contact from '../app/views/contact';
 import Login from '../app/views/auth/login';
 import customers from '../app/views/customers';
-import { ErrorLayout } from '../app/views/layouts';
 import CustomerShow from '../app/views/customers/CustomerShow';
 
 
@@ -25,7 +24,6 @@ const routes = [
     name: 'login',
     icon: null,
     component: Login,
-    layout: 'AuthLayout',
     private: false,
     exact: false
   },
@@ -35,7 +33,6 @@ const routes = [
     name: 'Home',
     icon: null,
     component: Home,
-    layout: 'AppLayout',
     private: true,
     exact: true,
     children: [
@@ -43,14 +40,12 @@ const routes = [
         name: 'Create Customer',
         path: '/customers',
         component: customers,
-        layout: 'AppLayout',
         exact: true
       },
       {
         name: 'Show Customer',
         path: '/customers/:id',
         component: customers,
-        layout: 'AppLayout',
         exact: false
       }
     ]
@@ -60,7 +55,6 @@ const routes = [
     name: 'Produtos',
     icon: null,
     component: Home,
-    layout: 'AppLayout',
     private: false,
     exact: false,
     children: [
@@ -69,13 +63,11 @@ const routes = [
         path: '/products',
         component: customers,
         private: true,
-        layout: 'AppLayout'
       },
       {
         name: 'Show produto',
         path: '/products/:id',
         component: CustomerShow,
-        layout: 'AppLayout'
       }
     ]
   },
@@ -84,11 +76,9 @@ const routes = [
     name: 'contato',
     icon: null,
     component: Contact,
-    layout: 'AppLayout',
     private: true,
     exact: false,
-  }
-  
+  },  
 ];
 
 export default routes;

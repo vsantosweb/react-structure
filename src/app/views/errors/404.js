@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // import { Container } from './styles';
 
-function Error404() {
+function Error404({layout}) {
+
+  useEffect(() => layout('ErrorLayout'))
   return <div>404 not found</div>;
 }
 

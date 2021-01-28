@@ -73,6 +73,7 @@ export default class Authenticator {
                 return token;
             case 'localStorage':
                 this.session = auth.localStorage;
+                break;
             default:
                 break;
         }

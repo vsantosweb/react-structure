@@ -2,10 +2,10 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { combineReducers } from 'redux';
 
-import sampleData from './store/actions/sample/SampleReducer';
+import LayoutReducer from './app/views/layouts/redux';
 
 const reducers = combineReducers({ 
-    sampleData
+    LayoutReducer
 });
 
 const store = createStore(reducers, applyMiddleware(thunk));

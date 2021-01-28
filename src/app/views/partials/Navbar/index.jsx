@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Authenticator from '../../../../start/authenticator';
 
-export default function Navbar({ adsMachines }){
+export default function Navbar(){
     
     return(
         <nav>
-            contador : { adsMachines.length}
+            contador : { 15}
             <a href={'#'} onClick={() => Authenticator.signOut() } >sair</a>
             <ul>
                 <li><Link to={'/'}>Home</Link></li>

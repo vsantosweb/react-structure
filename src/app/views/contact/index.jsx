@@ -1,17 +1,20 @@
 import React, { useEffect } from 'react';
 
-export default function Contact(props) {
+export default function Contact({layout, pageConfig}) {
 
     useEffect(() => {
 
-        props.pageConfig({
+        layout('AppLayout')
+
+        pageConfig({
+            
             pageDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
             pageTitle: 'CONTATO',
             pageUrl: '/contato',
             image: null
         })
 
-    }, []);
+    }, [layout, pageConfig]);
 
     return (
         <div>

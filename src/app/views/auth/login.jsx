@@ -2,20 +2,25 @@ import React, { useState, useEffect } from 'react';
 import Validator from 'Validator';
 import Authenticator from '../../../start/authenticator';
 
-export default function Login(props) {
+export default function Login({layout, pageConfig}) {
 
     const [formData, setFormData] = useState(false);
     const [formFeedBack, setFormFeedBack] = useState(false);
     const [disableSubmit, setDisableSubmit] = useState(true);
-    console.log(props, 'props')
+    
     useEffect(() => {
-        props.pageConfig({
+        
+        layout('AuthLayout')
+        
+        pageConfig({
             pageDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry', 
             pageTitle: 'Login', 
             pageUrl: '/login', 
             image: null
         })
-    }, [])
+
+    }, [layout, pageConfig])
+    
     const rules = (data) => (
 
         Validator.make(data, {
@@ -62,7 +67,6 @@ export default function Login(props) {
         })
         e.target.reset();
     }
-    console.log(formFeedBack, 'kodsakdos')
     return (
         <React.Fragment>
             <form onSubmit={handleSubmit}>

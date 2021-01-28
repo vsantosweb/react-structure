@@ -17,7 +17,6 @@ export default function AppLayout({children}) {
         getMachines()
     },[]);
 
-    console.log(machines)
     return (
         <div>
             <Navbar adsMachines={machines} />
