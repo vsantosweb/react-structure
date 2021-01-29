@@ -10,6 +10,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from '../store';
+
+
 import Routes from './routes';
 
 import Authenticator from './authenticator';
@@ -23,7 +27,7 @@ export default function App(props) {
     const [layout, setLayout] = useState(false);
     const [routes, setRoutes] = useState(false);
     const [pageInfo, pageConfig] = useState('')
-    
+
     /*
     |--------------------------------------------------------------------------
     | Utilização de redutores
@@ -39,43 +43,9 @@ export default function App(props) {
 
     useEffect(() => {
         redirectIfAuthenticated()
-}, [pageInfo])
+    }, [pageInfo])
 
-
-    const redirectIfAuthenticated = async () => {
-        if (app.withAuth) {
-            return await Authenticator.isAuthenticated().then(isAuth => {
-
-                if (isAuth && window.location.pathname === '/login') {
-
-                    return redirectTo('/');
-                }
-
-                for (let route of Routes) {
-                    if (!isAuth && route.type === 'auth' && route.path === window.location.pathname) {
-
-                        return redirectTo(window.location.pathname);
-                    }
-
-                    if (!isAuth && route.private && route.path === window.location.pathname) {
-                        return redirectTo('/login');
-                    }
-                }
-                 renderRoutes()
-
-            })
-
-        }
-
-        return;
-
-    }
-
-    const redirectTo = (path) => window.location.pathname = path
-
-
-    const renderRoutes = () => {
-
+    const getRoutes = () => {
         const RouteChildren = Routes.filter(route => route.children !== undefined).map(route => route.children);
 
         let childrenList = [];
@@ -85,25 +55,56 @@ export default function App(props) {
                 childrenList.push(RouteChildren[i][j])
             }
         }
-        const routes = [
+        return [
             ...Routes.map(route => route),
             ...childrenList
         ]
+    }
+    const redirectIfAuthenticated = async () => {
+        
+        if (app.withAuth) {
+            return await Authenticator.isAuthenticated().then(isAuth => {
 
+                if (isAuth && window.location.pathname === '/login') {
 
-        let compiledRoutes = routes.map(ViewRoute => {
+                    return window.history.back();
+                }
+
+                for (let route of getRoutes()) {
+                    if (!isAuth && route.type === 'auth' && route.path === window.location.pathname) {
+
+                        return redirectTo(window.location.pathname);
+                    }
+
+                    if (!isAuth && route.private && route.path === window.location.pathname) {
+                        return redirectTo('/login');
+                    }
+                }
+                renderRoutes()
+
+            })
+
+        }
+    }
+
+    const redirectTo = (path) => window.location.pathname = path
+
+    const renderRoutes = () => {
+
+        let compiledRoutes = getRoutes().map(ViewRoute => {
 
             return <Route key={ViewRoute.path} exact={ViewRoute.exact} path={ViewRoute.path} render={(props) => {
 
                 if (window.location.pathname === props.match.url) {
-                    
-                     return <ViewRoute.component layout={setLayout} pageConfig={pageConfig} {...props} />;
+
+                    return <ViewRoute.component layout={setLayout} pageConfig={pageConfig} {...props} />;
                 }
 
             }} />
 
         })
 
+        console.log(compiledRoutes, 'routes')
 
         setRoutes(compiledRoutes)
 
@@ -112,15 +113,12 @@ export default function App(props) {
     return (
         routes ?
             <BrowserRouter>
-
                 <Switch>
                     <Layout layoutType={layout} >
                         <SEO {...pageInfo} />
                         {routes}
                     </Layout>
-
                 </Switch>
-
             </BrowserRouter> : ''
 
     )

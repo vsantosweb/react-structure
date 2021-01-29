@@ -12,7 +12,7 @@
 import Home from '../app/views/home';
 import Contact from '../app/views/contact';
 import Login from '../app/views/auth/login';
-import customers from '../app/views/customers';
+import CustomerIndex from '../app/views/customers/CustomerIndex';
 import CustomerShow from '../app/views/customers/CustomerShow';
 
 
@@ -39,35 +39,17 @@ const routes = [
       {
         name: 'Create Customer',
         path: '/customers',
-        component: customers,
-        exact: true
+        component: CustomerIndex,
+        exact: false,
+        private: true,
+
       },
       {
         name: 'Show Customer',
         path: '/customers/:id',
-        component: customers,
-        exact: false
-      }
-    ]
-  },
-  {
-    path: '/produtos',
-    name: 'Produtos',
-    icon: null,
-    component: Home,
-    private: false,
-    exact: false,
-    children: [
-      {
-        name: 'Create PRoduto',
-        path: '/products',
-        component: customers,
-        private: true,
-      },
-      {
-        name: 'Show produto',
-        path: '/products/:id',
         component: CustomerShow,
+        exact: false,
+        private: true,
       }
     ]
   },
