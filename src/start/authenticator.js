@@ -52,10 +52,10 @@ export default class Authenticator {
             headers: {
                 Authorization: 'Bearer ' + Cookie.get(auth.cookie.key)
             }
-        }).then((response) => {
+        }).then(() => {
             return this.authenticated = true;
 
-        }).catch(error => {
+        }).catch(() => {
             this.authenticated = false;
         })
 

@@ -5,9 +5,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import App from './start/app';
 import { store, persistor } from './store';
 
-import Loader from 'react-loader-spinner'
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
-
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={<div>loading</div>} persistor={persistor}>

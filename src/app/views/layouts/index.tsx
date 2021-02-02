@@ -5,8 +5,7 @@ import ErrorLayout from "./ErrorLayout";
 
 const layouts = {
     AppLayout: AppLayout,
-    AuthLayout: AuthLayout,
-    ErrorLayout: ErrorLayout
+    AuthLayout: AuthLayout
 };
 
 interface LayoutProps {
@@ -14,7 +13,8 @@ interface LayoutProps {
 }
 
 export const Layout: FC<LayoutProps> = ({ children, layoutType }) => {
-    const Component = layouts[layoutType] || ErrorLayout;
+    
+    const Component = layouts[layoutType] || ErrorLayout || React.Fragment;
 
     return <Component>{children}</Component>;
 };

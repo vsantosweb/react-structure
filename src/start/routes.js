@@ -25,7 +25,8 @@ const routes = [
     icon: null,
     component: Login,
     private: false,
-    exact: false
+    exact: false,
+    layout: 'AuthLayout'
   },
 
   {
@@ -35,6 +36,7 @@ const routes = [
     component: Home,
     private: true,
     exact: true,
+    layout:'AppLayout',
     children: [
       {
         name: 'Create Customer',
@@ -42,6 +44,7 @@ const routes = [
         component: CustomerIndex,
         exact: false,
         private: true,
+        layout:'AppLayout',
 
       },
       {
@@ -50,6 +53,7 @@ const routes = [
         component: CustomerShow,
         exact: false,
         private: true,
+        layout:'AppLayout',
       }
     ]
   },
@@ -60,6 +64,7 @@ const routes = [
     component: Contact,
     private: true,
     exact: false,
+    layout:'AppLayout',
   },  
 ];
 

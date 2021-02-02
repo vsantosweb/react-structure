@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // import { Container } from './styles';
-import { addCustomer } from './redux/actions';
+import { addCustomer } from './reducer/actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function CustomerForm() {

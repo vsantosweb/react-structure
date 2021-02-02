@@ -1,4 +1,3 @@
-import Axios from "axios"
 
 
 export const addCustomer = (customer) => ({
