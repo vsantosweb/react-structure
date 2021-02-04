@@ -5,18 +5,19 @@ import ErrorLayout from "./ErrorLayout";
 
 const layouts = {
     AppLayout: AppLayout,
-    AuthLayout: AuthLayout
+    AuthLayout: AuthLayout,
+    ErrorLayout:ErrorLayout
 };
 
 interface LayoutProps {
-    layoutType: "AppLayout" | "AuthLayout";
+    layoutType: "AppLayout" | "AuthLayout" | "ErrorLayout";
 }
 
 export const Layout: FC<LayoutProps> = ({ children, layoutType }) => {
-    
-    const Component = layouts[layoutType] || ErrorLayout || React.Fragment;
 
+    let Component = layouts[layoutType] || React.Fragment;
     return <Component>{children}</Component>;
+
 };
 
 // export default MLayout;

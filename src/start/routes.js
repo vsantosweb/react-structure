@@ -9,12 +9,12 @@
 |
 */
 
-import Home from '../app/views/home';
-import Contact from '../app/views/contact';
-import Login from '../app/views/auth/login';
-import CustomerIndex from '../app/views/customers/CustomerIndex';
-import CustomerShow from '../app/views/customers/CustomerShow';
-
+import Home from '../app/pages/home';
+import Contact from '../app/pages/contact';
+import Login from '../app/pages/auth/login';
+import CustomerIndex from '../app/pages/customers/CustomerIndex';
+import CustomerShow from '../app/pages/customers/CustomerShow';
+import Error404 from '../app/pages/errors/404';
 
 
 const routes = [
@@ -36,15 +36,15 @@ const routes = [
     component: Home,
     private: true,
     exact: true,
-    layout:'AppLayout',
+    layout: 'AppLayout',
     children: [
       {
         name: 'Create Customer',
         path: '/customers',
         component: CustomerIndex,
-        exact: false,
+        exact: true,
         private: true,
-        layout:'AppLayout',
+        layout: 'AppLayout',
 
       },
       {
@@ -53,7 +53,7 @@ const routes = [
         component: CustomerShow,
         exact: false,
         private: true,
-        layout:'AppLayout',
+        layout: 'AppLayout',
       }
     ]
   },
@@ -64,8 +64,8 @@ const routes = [
     component: Contact,
     private: true,
     exact: false,
-    layout:'AppLayout',
-  },  
+    layout: 'AppLayout',
+  },
 ];
 
 export default routes;

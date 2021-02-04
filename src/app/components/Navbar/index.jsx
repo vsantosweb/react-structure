@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Authenticator from '../../../../start/authenticator';
+import Authenticator from '../../../start/authenticator';
 
 export default function Navbar(){
 

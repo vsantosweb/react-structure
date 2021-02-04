@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import Navbar from '../partials/Navbar';
+import Navbar from '../components/Navbar';
 import axios from 'axios';
 
 const api = axios.create({

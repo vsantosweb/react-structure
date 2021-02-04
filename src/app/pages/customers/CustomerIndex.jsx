@@ -9,7 +9,7 @@ function CustomerIndex({ layout, pageConfig }) {
     layout('AppLayout')
     pageConfig({
       pageDescription: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
-      pageTitle: 'Pagina Home',
+      pageTitle: 'Pagina Customer',
       pageUrl: '/home',
       image: null
     })
