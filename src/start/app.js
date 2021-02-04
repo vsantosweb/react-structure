@@ -45,8 +45,8 @@ export default function App(props) {
 
     useEffect(() => {
         redirectIfAuthenticated()
-        // let authCheck = setInterval(() => redirectIfAuthenticated(), 100000);
-        // return () => clearInterval(authCheck);
+        let authCheck = setInterval(() => redirectIfAuthenticated(), 100000);
+        return () => clearInterval(authCheck);
 
     }, [pageInfo, layout])
 
@@ -112,7 +112,6 @@ export default function App(props) {
 
         setRoutes(compiledRoutes)
     }
-    console.log(routes)
     return (
         routes ?
             <BrowserRouter>
